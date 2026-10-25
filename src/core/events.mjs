@@ -7,7 +7,7 @@ export const KINDS = Object.freeze([
   'agent.started', 'agent.completed', 'agent.message',
   'model.started', 'model.completed',
   'tool.started', 'tool.completed',
-  'file.changed', 'test.completed'
+  'file.discovered', 'file.changed', 'test.completed'
 ]);
 const KIND_SET = new Set(KINDS);
 const STATUS = new Set(['ok', 'error', 'cancelled', 'unknown']);
@@ -55,7 +55,7 @@ export function normalizeEvent(raw, { now = Date.now(), runId = 'atelier-demo', 
   if (raw.parentAgentId != null) event.parentAgentId = ident(raw.parentAgentId, 'parentAgentId');
   if (raw.peerAgentId != null) event.peerAgentId = ident(raw.peerAgentId, 'peerAgentId');
   if (raw.filePath != null && includeFilePaths) event.filePath = sanitizePath(raw.filePath);
-  if (raw.kind === 'file.changed' && includeFilePaths && !event.filePath) {
+  if ((raw.kind === 'file.changed' || raw.kind === 'file.discovered') && includeFilePaths && !event.filePath) {
     throw new TypeError('file.changed requires filePath');
   }
   if (raw.operation != null) {
