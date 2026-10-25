@@ -25,17 +25,17 @@ export function deriveScene(events) {
     if (e.kind === 'model.started') scene.activeModels.add(e.agentId);
     if (e.kind === 'model.completed') scene.activeModels.delete(e.agentId);
     scene.agents.set(e.agentId, agent);
-    if (e.kind === 'file.changed' && e.filePath) {
-      changed.add(e.filePath);
+    if ((e.kind === 'file.changed' || e.kind === 'file.discovered') && e.filePath) {
+      if (e.kind === 'file.changed') changed.add(e.filePath);
       const parts = e.filePath.split('/');
       const parent = parts.length > 1 ? parts.slice(0, -1).join('/') : '';
       const file = scene.files.get(e.filePath) || { path: e.filePath, parent, firstAt: e.at,
         lastAt: e.at, changes: 0, added: 0, removed: 0, operation: 'create', agents: [] };
-      file.changes++;
+      if (e.kind === 'file.changed') file.changes++;
       file.lastAt = e.at;
       file.added += e.linesAdded || 0;
       file.removed += e.linesRemoved || 0;
-      file.operation = e.operation || 'modify';
+      file.operation = e.operation || (e.kind === 'file.discovered' ? 'observe' : 'modify');
       if (!file.agents.includes(e.agentId)) file.agents.push(e.agentId);
       scene.files.set(e.filePath, file);
     }
@@ -63,7 +63,7 @@ export function eventLabel(e) {
     'agent.message': 'Agent handoff', 'model.started': 'Model active',
     'model.completed': 'Model phase ended',
     'tool.started': 'Tool invoked', 'tool.completed': 'Tool returned',
-    'file.changed': 'File changed', 'test.completed': 'Tests completed'
+    'file.changed': 'File changed', 'file.discovered': 'File indexed', 'test.completed': 'Tests completed'
   };
   return names[e.kind] || e.kind;
 }
