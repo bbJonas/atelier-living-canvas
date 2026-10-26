@@ -1,5 +1,6 @@
 import { deriveScene,eventLabel } from '/src/core/scene.mjs';
 import { generateDemo } from '/src/core/demo.mjs';
+import { MaterializedScene } from '/src/core/materializer.mjs';
 import * as hybrid from './visualizers/hybrid.mjs';
 import * as cosmos from './visualizers/cosmos.mjs';
 import * as streams from './visualizers/streams.mjs';
@@ -13,6 +14,7 @@ const demo=generateDemo(),start=demo[0].at,end=demo.at(-1).at,duration=end-start
 const speeds=[.5,1,2,4];
 let speedIndex=1,view='hybrid',source='demo',playing=true;
 let playhead=start+duration*.46,liveEvents=[],liveConnected=false;
+const liveMaterializer=new MaterializedScene();
 let width=0,height=0,dirty=true,lastFrame=0,lastClock=0,lastUI=0;
 let frozenEvents=[],frozenScene=deriveScene([]);
 let snapshotKey='',transportChanged=true;
@@ -135,7 +137,7 @@ function paint(clock){
   const key=source+':'+events.length+':'+Math.floor(activeTime/400);
   if(key!==snapshotKey){
     frozenEvents=events;
-    frozenScene=deriveScene(events);
+    frozenScene=source==='live'?liveMaterializer.scene(events):deriveScene(events);
     snapshotKey=key;
   }
   ctx.clearRect(0,0,width,height);
@@ -182,6 +184,8 @@ stream.addEventListener('snapshot',e=>{
   try{
     const data=JSON.parse(e.data);
     liveEvents=Array.isArray(data.events)?data.events.slice(-limit):[];
+    if(data.state)liveMaterializer.load(data.state);
+    else {liveMaterializer.load(new MaterializedScene().snapshot());for(const item of liveEvents)liveMaterializer.apply(item)}
     dirty=true;transportChanged=true;snapshotKey='';
     setButtonState();
   }catch{liveConnected=false;updateConnection()}
@@ -191,6 +195,7 @@ stream.addEventListener('telemetry',e=>{
     const item=JSON.parse(e.data);
     if(liveEvents.some(v=>v.seq===item.seq))return;
     liveEvents.push(item);
+    liveMaterializer.apply(item);
     if(liveEvents.length>limit)liveEvents.splice(0,liveEvents.length-limit);
     dirty=true;transportChanged=true;snapshotKey='';
   }catch{ /* malformed stream item ignored */ }
