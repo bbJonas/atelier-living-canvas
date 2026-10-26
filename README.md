@@ -28,7 +28,7 @@ Optionally, from within a Git project, take a one-time tracked-file inventory:
 
     node scripts/send-events.mjs --git-files
 
-This inventories files, but does **not** call them edits. Existing DSH/OpenCode/Pi/Hermes/Atelier adapters are not bundled or claimed; they should translate their trustworthy runtime events into [the stable schema](docs/SCHEMA.md).
+This inventories files, but does **not** call them edits. A generic programmatic bridge exists in `src/core/instrumentation.mjs`: `createInstrumentation({runId, emit})` supplies hooks for agent starts/ends, verified file changes, real tool/model-request spans, tests and handoffs; `createHttpEmitter()` provides small on-demand HTTP batches. Existing DSH/OpenCode/Pi/Hermes/Atelier-specific adapters are not bundled or claimed; each should translate its trustworthy runtime events into [the stable schema](docs/SCHEMA.md).
 
 ## Four visual languages
 
