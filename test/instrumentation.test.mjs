@@ -41,3 +41,11 @@ test('HTTP emitter batches events and drains before closing',async()=>{
   assert.equal(emitter.stats.sent,3);
   assert.equal(emitter.stats.queued,0);
 });
+
+test('invalid metadata is reported but does not abort underlying execution',async()=>{
+  const errors=[];
+  const hooks=createInstrumentation({emit:()=>{},onError:error=>errors.push(error.message)});
+  const value=await hooks.withTool('invalid tool name!',async()=>99);
+  assert.equal(value,99);
+  assert.equal(errors.length,2);
+});
