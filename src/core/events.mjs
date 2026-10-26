@@ -40,7 +40,7 @@ export function sanitizePath(value) {
   }
   return parts.join('/');
 }
-export function normalizeEvent(raw, { now = Date.now(), runId = 'atelier-demo', includeFilePaths = true } = {}) {
+export function normalizeEvent(raw, { now = Date.now(), runId = 'local-run', includeFilePaths = true } = {}) {
   if (!raw || typeof raw !== 'object' || Array.isArray(raw)) throw new TypeError('Expected event object');
   if (!KIND_SET.has(raw.kind)) throw new TypeError('Unknown event kind');
   const at = raw.at == null ? now : raw.at;
