@@ -38,9 +38,9 @@ Explizites Feedback nach erster Ansicht der v0.1:
 ### 3.1 Laufzeit und Bedienung
 
 - Eigenständige Node.js-Anwendung (Node 20+), keine externen Runtime-npm-Pakete.
-- Lokaler Server, standardmäßig \`http://127.0.0.1:4173\`.
-- Responsive Dark-Mode-Arbeitsoberfläche: \`public/index.html\`, \`public/styles.css\`.
-- Reproduzierbarer synthetischer Demo-Arbeitslauf (\`src/core/demo.mjs\`).
+- Lokaler Server, standardmäßig `http://127.0.0.1:4173`.
+- Responsive Dark-Mode-Arbeitsoberfläche: `public/index.html`, `public/styles.css`.
+- Reproduzierbarer synthetischer Demo-Arbeitslauf (`src/core/demo.mjs`).
 - Replay mit Start/Stop, Seek/Scrubber, Geschwindigkeitswechsel.
 - Separat gekennzeichneter **Demo**- und **Live**-Modus, Ereignis-/Agenten-/Datei-/Tool-Zähler, jüngste Aktivitäten und Dateiliste.
 - Export von Canvas-PNG und bereinigter Telemetrie als JSON.
@@ -50,19 +50,19 @@ Explizites Feedback nach erster Ansicht der v0.1:
 
 | Datei | Verantwortung |
 | --- | --- |
-| \`src/core/events.mjs\` | Versioniertes Telemetrie-v1-Schema, typisierte Ereignisse, Allowlist, Pfadsicherung, Normalisierung |
-| \`src/core/collector.mjs\` | In-Memory-Ringjournal, vollständige Batchvalidierung, Ratenlimit, Beobachter |
-| \`src/core/instrumentation.mjs\` | Harness-unabhängige programmatische Hooks für echte Tool-/Modellaufrufe, Agenten, Dateien, Tests und Handoffs; HTTP-Batching |
-| \`src/core/materializer.mjs\` | Inkrementelle kompakte Datei-/Agentenprojektion über das Ereignisjournal hinaus |
-| \`src/server.mjs\` | HTTP-Ingest, Snapshot, Server-Sent Events, lokale Weboberfläche |
-| \`scripts/send-events.mjs\` | NDJSON-Einspeisung und optional einmalige Git-Dateiinventur |
+| `src/core/events.mjs` | Versioniertes Telemetrie-v1-Schema, typisierte Ereignisse, Allowlist, Pfadsicherung, Normalisierung |
+| `src/core/collector.mjs` | In-Memory-Ringjournal, vollständige Batchvalidierung, Ratenlimit, Beobachter |
+| `src/core/instrumentation.mjs` | Harness-unabhängige programmatische Hooks für echte Tool-/Modellaufrufe, Agenten, Dateien, Tests und Handoffs; HTTP-Batching |
+| `src/core/materializer.mjs` | Inkrementelle kompakte Datei-/Agentenprojektion über das Ereignisjournal hinaus |
+| `src/server.mjs` | HTTP-Ingest, Snapshot, Server-Sent Events, lokale Weboberfläche |
+| `scripts/send-events.mjs` | NDJSON-Einspeisung und optional einmalige Git-Dateiinventur |
 
 Wichtige Endpunkte:
 
-- \`POST /api/events\`: einzeln oder als Batch strukturierte Ereignisse einspeisen.
-- \`GET /api/stream\`: SSE-Stream; initialer Snapshot einschließlich kompakter Zustandsprojektion, anschließend Ereignisse.
-- \`GET /api/snapshot\`: Journal, Statistik und Projektionszustand.
-- \`GET /api/health\`: Betriebs-/Pufferzähler.
+- `POST /api/events`: einzeln oder als Batch strukturierte Ereignisse einspeisen.
+- `GET /api/stream`: SSE-Stream; initialer Snapshot einschließlich kompakter Zustandsprojektion, anschließend Ereignisse.
+- `GET /api/snapshot`: Journal, Statistik und Projektionszustand.
+- `GET /api/health`: Betriebs-/Pufferzähler.
 
 Bisher existiert **noch keine belegte native Anbindung** an konkrete DSH-, OpenCode-, Pi-, Hermes- oder Atelier-Hooks. Die generische Schnittstelle ist vorbereitet. Demo-Ereignisse sind **synthetisch**.
 
@@ -70,16 +70,16 @@ Bisher existiert **noch keine belegte native Anbindung** an konkrete DSH-, OpenC
 
 | Datei | Verantwortung |
 | --- | --- |
-| \`src/core/scene.mjs\` | Ereignisfolge zu Agenten, Dateien, Interaktionen und Zählern verdichten |
-| \`src/core/layout.mjs\` | Deterministische Positionen für Ordner und Dateiknoten |
-| \`public/main.mjs\` | UI-Controller, Replay, Live-Quelle, Rendering, Exporte |
-| \`public/visualizers/shared.mjs\` | Gemeinsame Zeichnungsfunktionen, Wellen, Topologie, Farbpalette |
-| \`public/visualizers/hybrid.mjs\` | Aktueller Modus „Living artwork“, Rhythmus plus Struktur |
-| \`public/visualizers/cosmos.mjs\` | Dateikosmos / Konstellation |
-| \`public/visualizers/streams.mjs\` | Agentenströme und beobachtete Handoffs |
-| \`public/visualizers/rhythm.mjs\` | Aktivitätspartitur / Wellenbild |
+| `src/core/scene.mjs` | Ereignisfolge zu Agenten, Dateien, Interaktionen und Zählern verdichten |
+| `src/core/layout.mjs` | Deterministische Positionen für Ordner und Dateiknoten |
+| `public/main.mjs` | UI-Controller, Replay, Live-Quelle, Rendering, Exporte |
+| `public/visualizers/shared.mjs` | Gemeinsame Zeichnungsfunktionen, Wellen, Topologie, Farbpalette |
+| `public/visualizers/hybrid.mjs` | Aktueller Modus „Living artwork“, Rhythmus plus Struktur |
+| `public/visualizers/cosmos.mjs` | Dateikosmos / Konstellation |
+| `public/visualizers/streams.mjs` | Agentenströme und beobachtete Handoffs |
+| `public/visualizers/rhythm.mjs` | Aktivitätspartitur / Wellenbild |
 
-Die vier Modi konsumieren dieselbe abgeleitete Szene, ohne die Erfassungsschicht zu verändern. Ein Renderer stellt \`title\`, \`subtitle\` und \`draw(ctx, {width, height, scene, events, time})\` bereit und wird im UI-Controller registriert.
+Die vier Modi konsumieren dieselbe abgeleitete Szene, ohne die Erfassungsschicht zu verändern. Ein Renderer stellt `title`, `subtitle` und `draw(ctx, {width, height, scene, events, time})` bereit und wird im UI-Controller registriert.
 
 **Der künstlerische Entwicklungsstand ist ausdrücklich PROVISORISCH.** Weder geometrische Punktnetze noch Wellen sind als verbindliche endgültige Ästhetik festgelegt.
 
@@ -88,7 +88,7 @@ Die vier Modi konsumieren dieselbe abgeleitete Szene, ohne die Erfassungsschicht
 - Standard: maximal 3.000 einzelne Ereignisse im Journal; bis zu 300 angenommene Events/s; kompakte Zustandsprojektion für bis zu 2.500 Dateien und 96 Agenten.
 - Render-Deckel nominell 30 FPS, Auflösungsbegrenzung auf ca. 1,6 Mio. Pixel; verminderte Bewegung wird berücksichtigt, unsichtbare Tabs rendern nicht.
 - Keine zusätzlichen LLM-Aufrufe, nur um Kunst zu erzeugen. Keine aggressive Hintergrund-Dateiüberwachung.
-- Pfade nur relativ; bei Bedarf \`CANVAS_REDACT_PATHS=1\`.
+- Pfade nur relativ; bei Bedarf `CANVAS_REDACT_PATHS=1`.
 - Keine Rohprompts, Gedankengänge, Toolargumente, Toolergebnisse, Quelldateiinhalte oder Credentials in der Telemetrie. Unbekannte Eventfelder werden verworfen.
 - Lokale Bindung an Loopback. Ferner Netzwerkbetrieb ohne Absicherung ist nicht vorgesehen.
 - **Das Repository ist zum Übergabezeitpunkt öffentlich!** Keine privaten Arbeitsläufe, Geheimnisse oder proprietären Projektdateien committen.
@@ -107,8 +107,8 @@ Die vier Modi konsumieren dieselbe abgeleitete Szene, ohne die Erfassungsschicht
 
 ### A. Erst analysieren, dann Kunst entwerfen
 
-1. Repo auschecken, \`README.md\`, \`docs/ARCHITECTURE.md\`, \`docs/SCHEMA.md\` und diese Übergabe lesen.
-2. \`npm run check\` und \`npm start\` ausführen; Dark-Mode-Oberfläche und alle vier aktuellen Stile im Browser bei Replay, Seek und verschiedenen Fenstergrößen tatsächlich ansehen.
+1. Repo auschecken, `README.md`, `docs/ARCHITECTURE.md`, `docs/SCHEMA.md` und diese Übergabe lesen.
+2. `npm run check` und `npm start` ausführen; Dark-Mode-Oberfläche und alle vier aktuellen Stile im Browser bei Replay, Seek und verschiedenen Fenstergrößen tatsächlich ansehen.
 3. Verstehen, welche Daten **wirklich** verfügbar sind, welchen zeitlichen Verlauf sie haben und welche visuellen Aussagen sie tragen können. Unbeobachtetes nicht „künstlerisch“ als echte Telemetrie ausgeben.
 4. Die vorhandene Oberfläche als Referenz bewahren. Änderungen daran nur, wenn sie dem visuellen Experiment nachweisbar helfen.
 
@@ -156,7 +156,7 @@ Die App sollte mehrere Modi mit demselben fixierten Event-Trace vergleichbar mac
 5. **Replay-Semantik:** Zeitreisen dürfen nicht dauerhaft falsche Nachzustände zeigen. Falls ein Renderer interne Historie braucht, deterministisch rekonstruieren oder Checkpoints benutzen.
 6. **Fallback und Accessibility:** Funktion auch bei reduzierter Bewegung; angemessener 2D-Fallback bei optionaler GPU-Technik; Kontext und Zustand auch textlich zugänglich.
 7. **Keine Geheimnisse:** Nicht Rohtext des LLM oder Source-Code-Inhalte für visuelle Effekte einspeisen, sofern nicht separat und ausdrücklich neu autorisiert.
-8. **Keine ungefragte Produktionseinbindung:** Nicht das private Hauptrepo \`bbJonas/atelier\` verändern, nicht auf Servern deployen. Living Canvas bleibt Forschungs-/Experimentier-App.
+8. **Keine ungefragte Produktionseinbindung:** Nicht das private Hauptrepo `bbJonas/atelier` verändern, nicht auf Servern deployen. Living Canvas bleibt Forschungs-/Experimentier-App.
 
 ## 7. Erwartete Ergebnisse des nächsten Entwicklungsdurchgangs
 
@@ -175,28 +175,28 @@ Der nächste Agent sollte nicht nur ein Moodboard liefern, sondern **lauffähige
 
 ## 8. Schnellstart und Referenzen
 
-\`\`\`bash
+```bash
 git clone https://github.com/bbJonas/atelier-living-canvas.git
 cd atelier-living-canvas
 npm run check
 npm start
 # Browser: http://127.0.0.1:4173
-\`\`\`
+```
 
 Beispiel für einen echten Telemetrie-Eingang (keine erfundene Modell-Reasoning-Ausgabe):
 
-\`\`\`bash
+```bash
 curl -sS -X POST http://127.0.0.1:4173/api/events \
   -H 'Content-Type: application/json' \
   -d '{"kind":"file.changed","runId":"art-trial-01","agentId":"builder","filePath":"src/app.ts","operation":"modify","linesAdded":17}'
-\`\`\`
+```
 
-- \`README.md\`: Installation und Bedienung.
-- \`docs/ARCHITECTURE.md\`: Designentscheidungen und Grenzen.
-- \`docs/SCHEMA.md\`: Eventvertrag; bei Widerspruch zur Laufzeit hat \`src/core/events.mjs\` Vorrang.
-- \`public/visualizers/\`: bisherige Stilimplementierungen.
-- \`src/core/demo.mjs\`: synthetischer Replay-Datensatz.
-- \`test/\`: automatische Sicherheits-/Logik-/HTTP-Tests.
+- `README.md`: Installation und Bedienung.
+- `docs/ARCHITECTURE.md`: Designentscheidungen und Grenzen.
+- `docs/SCHEMA.md`: Eventvertrag; bei Widerspruch zur Laufzeit hat `src/core/events.mjs` Vorrang.
+- `public/visualizers/`: bisherige Stilimplementierungen.
+- `src/core/demo.mjs`: synthetischer Replay-Datensatz.
+- `test/`: automatische Sicherheits-/Logik-/HTTP-Tests.
 - Ursprünglicher Implementierungs-PR: https://github.com/bbJonas/atelier-living-canvas/pull/1
 
 ## 9. Entscheidungsstatus
@@ -211,4 +211,4 @@ curl -sS -X POST http://127.0.0.1:4173/api/events \
 
 ### Sofort kopierbarer Folgeauftrag für einen Coding-/Design-Agenten
 
-> Arbeite im Repository \`bbJonas/atelier-living-canvas\`. Lies zuerst \`docs/HANDOFF_VISUAL_ART_DIRECTION.md\` sowie README, Architektur und Schema, und prüfe den existierenden Demo- und Live-Betrieb. Die bestehende Dark-Mode-Oberfläche gefällt, **aber die derzeitigen Kunststile sind noch nicht überzeugend**. Deine Hauptaufgabe ist künstlerische Exploration: Entwickle mindestens drei grundlegend unterschiedliche, hochwertige, datengetriebene Visualisierungssprachen als modular auswählbare, laufende Prototypen, die **dieselbe** Agenten-Telemetrie interpretieren. Bewahre die unabhängige schlanke Capture-Schicht, gute Replay-Semantik, Determinismus, Datenschutz und geringe Ressourcenlast. Keine symbolische Hammer-/Gehirn-Darstellung, kein beliebiges hübsches Rauschen, keine bloßen Farbvarianten. Zeige die Entwicklung bei unterschiedlichen Replay-Phasen mit vergleichbaren Screenshots, prüfe die Performance und dokumentiere die Mapping-Regeln. Arbeite in einem neuen Feature-Branch mit PR; merge oder deploye nichts ohne Freigabe. Das Experiment soll später in Atelier integrierbar sein, aber das Atelier-Hauptrepository bleibt unangetastet.
+> Arbeite im Repository `bbJonas/atelier-living-canvas`. Lies zuerst `docs/HANDOFF_VISUAL_ART_DIRECTION.md` sowie README, Architektur und Schema, und prüfe den existierenden Demo- und Live-Betrieb. Die bestehende Dark-Mode-Oberfläche gefällt, **aber die derzeitigen Kunststile sind noch nicht überzeugend**. Deine Hauptaufgabe ist künstlerische Exploration: Entwickle mindestens drei grundlegend unterschiedliche, hochwertige, datengetriebene Visualisierungssprachen als modular auswählbare, laufende Prototypen, die **dieselbe** Agenten-Telemetrie interpretieren. Bewahre die unabhängige schlanke Capture-Schicht, gute Replay-Semantik, Determinismus, Datenschutz und geringe Ressourcenlast. Keine symbolische Hammer-/Gehirn-Darstellung, kein beliebiges hübsches Rauschen, keine bloßen Farbvarianten. Zeige die Entwicklung bei unterschiedlichen Replay-Phasen mit vergleichbaren Screenshots, prüfe die Performance und dokumentiere die Mapping-Regeln. Arbeite in einem neuen Feature-Branch mit PR; merge oder deploye nichts ohne Freigabe. Das Experiment soll später in Atelier integrierbar sein, aber das Atelier-Hauptrepository bleibt unangetastet.
