@@ -1,5 +1,5 @@
 import { deriveScene,eventLabel } from '/src/core/scene.mjs';
-import { generateDemo } from '/src/core/demo.mjs';
+import { generateDemoDataset, DEMO_DATASETS } from '/src/core/demo.mjs';
 import { MaterializedScene } from '/src/core/materializer.mjs';
 import * as hybrid from './visualizers/hybrid.mjs';
 import * as cosmos from './visualizers/cosmos.mjs';
@@ -8,13 +8,17 @@ import * as rhythm from './visualizers/rhythm.mjs';
 import * as ink from './visualizers/ink.mjs';
 import * as strata from './visualizers/strata.mjs';
 import * as loom from './visualizers/loom.mjs';
+import * as prismatic from './visualizers/prismatic.mjs';
+import * as bloom from './visualizers/bloom.mjs';
+import * as ribbons from './visualizers/ribbons.mjs';
 import { tracePhases } from './visualizers/art-data.mjs';
 
-const views={hybrid,cosmos,streams,rhythm,ink,strata,loom};
+const views={hybrid,cosmos,streams,rhythm,ink,strata,loom,prismatic,bloom,ribbons};
 const $=id=>document.getElementById(id);
 const canvas=$('art'),ctx=canvas.getContext('2d',{alpha:false,desynchronized:true});
 if(!ctx)throw new Error('Canvas 2D not supported');
-const demo=generateDemo(),start=demo[0].at,end=demo.at(-1).at,duration=end-start;
+let datasetId='atlas',demo=generateDemoDataset(datasetId);
+let start=demo[0].at,end=demo.at(-1).at,duration=end-start;
 const speeds=[.5,1,2,4];
 let speedIndex=1,view='hybrid',source='demo',playing=true;
 let playhead=start+duration*.46,liveEvents=[],liveConnected=false;
@@ -28,6 +32,8 @@ function setButtonState(){
     const active=b.dataset.view===view;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));
   }
   const isDemo=source==='demo';
+  $('dataset').disabled=!isDemo;
+  $('dataset').value=datasetId;
   $('source-demo').classList.toggle('selected',isDemo);
   $('source-live').classList.toggle('selected',!isDemo);
   $('source-demo').setAttribute('aria-pressed',String(isDemo));
@@ -46,7 +52,8 @@ function updateConnection(){
   const c=$('connection');
   c.classList.toggle('offline',source==='live'&&!liveConnected);
   c.lastChild.textContent=source==='demo'?' Demo trace':liveConnected?' Connected to local stream':' Disconnected';
-  $('canvas-state').textContent=source==='demo'?'Synthetic replay · not a live agent':
+  $('canvas-state').textContent=source==='demo'?
+    'Synthetic '+DEMO_DATASETS.find(d=>d.id===datasetId).label+' replay · not a live agent':
     liveConnected?'Live telemetry · sanitized event metadata':'Live stream not connected';
 }
 function resizeCanvas(){
@@ -159,6 +166,15 @@ for(const button of document.querySelectorAll('[data-view]'))button.addEventList
   if(!(button.dataset.view in views))return;
   view=button.dataset.view;dirty=true;setButtonState();
 });
+function chooseDataset(id){
+  if(!DEMO_DATASETS.some(d=>d.id===id))return;
+  datasetId=id;demo=generateDemoDataset(id);
+  start=demo[0].at;end=demo.at(-1).at;duration=Math.max(1,end-start);
+  playhead=start+duration*.46;playing=true;
+  snapshotKey='';dirty=true;transportChanged=true;
+  setButtonState();
+}
+$('dataset').addEventListener('change',e=>chooseDataset(e.target.value));
 $('source-demo').addEventListener('click',()=>selectSource('demo'));
 $('source-live').addEventListener('click',()=>selectSource('live'));
 $('play').addEventListener('click',()=>{playing=!playing;setButtonState();dirty=true});
@@ -177,20 +193,28 @@ function download(name,blob){
 const comparison=$('comparison');
 let comparisonPreviews=[];
 function openComparison(){
-  // Freeze all inputs for this contact sheet; comparison never changes the live source.
+  const compareDatasets=$('comparison-kind').value==='datasets'&&source==='demo';
+  $('comparison-kind').disabled=source==='live';
+  if(source==='live')$('comparison-kind').value='styles';
+  $('comparison-style').disabled=!compareDatasets;
+  $('comparison-group').disabled=compareDatasets;
+  // Both axes use the same elapsed-time fractions, not event count quantiles.
+  const modes=$('comparison-group').value==='classic'?
+    ['ink','strata','loom']:['prismatic','bloom','ribbons'];
   const trace=source==='demo'?demo:liveEvents.slice();
-  const last=trace.at(-1)?.at??Date.now();
-  const phases=tracePhases(trace,last);
-  const modes=[['ink',ink],['strata',strata],['loom',loom]];
+  const columns=compareDatasets?
+    DEMO_DATASETS.map(d=>({key:$('comparison-style').value,label:d.label,
+      dataset:d.id,trace:generateDemoDataset(d.id)})):
+    modes.map(key=>({key,label:views[key].title,dataset:datasetId,trace}));
   const labels=['OPENING','DEVELOPING','LATEST'];
-  const grid=$('comparison-grid');
-  const cards=[];
+  const grid=$('comparison-grid'),cards=[];
   comparisonPreviews=[];
-  for(const [key,renderer] of modes){
+  for(const column of columns){
     const card=make('section','comparison-style');
-    card.append(make('h3','',renderer.title));
+    card.append(make('h3','',column.label));
+    const full=column.trace,phases=tracePhases(full,full.at(-1)?.at??Date.now());
     for(let i=0;i<phases.length;i++){
-      const phase=phases[i];
+      const phase=phases[i],renderer=views[column.key];
       const thumb=document.createElement('canvas');
       thumb.width=360;thumb.height=210;
       const context=thumb.getContext('2d',{alpha:false});
@@ -199,25 +223,30 @@ function openComparison(){
       renderer.draw(context,{width:360,height:210,scene,events:phase.events,time:phase.time});
       const button=make('button','comparison-phase');
       button.type='button';
-      button.setAttribute('aria-label','Choose '+renderer.title+' at '+labels[i]);
+      button.setAttribute('aria-label','Choose '+column.label+' at '+labels[i]);
       button.append(thumb,make('span','',labels[i]+'  ·  '+phase.events.length+' events'));
       button.addEventListener('click',()=>{
-        view=key;
+        if(source==='demo' && compareDatasets && column.dataset!==datasetId)chooseDataset(column.dataset);
+        view=column.key;
         if(source==='demo'){playhead=phase.time;playing=false;}
         snapshotKey='';dirty=true;transportChanged=true;setButtonState();
         comparison.close();
       });
       card.append(button);
-      comparisonPreviews.push({canvas:thumb,title:renderer.title,phase:labels[i],count:phase.events.length});
+      comparisonPreviews.push({canvas:thumb,title:column.label,phase:labels[i],count:phase.events.length});
     }
     cards.push(card);
   }
   grid.replaceChildren(...cards);
+  $('comparison-title').textContent=compareDatasets?
+    'One style. Three working rhythms.':'One trace. Three interpretations.';
   $('comparison-source').textContent=source==='demo'?
-    'Synthetic demo · same fixed run and seed in every frame':
+    'Synthetic only · '+(compareDatasets?'Atlas, Release Rush and Deep Refactor':'same '+DEMO_DATASETS.find(d=>d.id===datasetId).label+' events in each column'):
     'Live · only the currently buffered event window (not full history)';
   if(!comparison.open)comparison.showModal();
 }
+for(const id of ['comparison-kind','comparison-group','comparison-style'])
+  $(id).addEventListener('change',()=>{if(comparison.open)openComparison()});
 $('compare').addEventListener('click',openComparison);
 $('close-comparison').addEventListener('click',()=>comparison.close());
 $('export-comparison').addEventListener('click',()=>{
@@ -235,13 +264,13 @@ $('export-comparison').addEventListener('click',()=>{
     c.fillText(item.title+'   /   '+item.phase+'   /   '+item.count+' EVENTS',x,y);
     c.drawImage(item.canvas,x,y+14,360,210);
   }
-  sheet.toBlob(blob=>{if(blob)download('atelier-art-lab-contact-sheet.png',blob)},'image/png');
+  sheet.toBlob(blob=>{if(blob)download('atelier-art-lab-'+(source==='demo'?datasetId:'live')+'-contact-sheet.png',blob)},'image/png');
 });
 $('export-image').addEventListener('click',()=>canvas.toBlob(blob=>{
-  if(blob)download('atelier-'+view+'-'+(source==='demo'?'demo':'live')+'.png',blob);
+  if(blob)download('atelier-'+view+'-'+(source==='demo'?datasetId:'live')+'.png',blob);
 },'image/png'));
 $('export-trace').addEventListener('click',()=>{
-  const payload={schema:1,source,exportedAt:new Date().toISOString(),
+  const payload={schema:1,source,dataset:source==='demo'?datasetId:null,exportedAt:new Date().toISOString(),
     events:currentEvents()};
   download('atelier-'+source+'-events.json',new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}));
 });

@@ -19,7 +19,7 @@ Living Canvas observes the *execution* of work, not a model's private mind. The 
 - \`topology\` is pure and deterministic: file and folder paths occupy stable positions.
 - Renderers are isolated modules in \`public/visualizers/\`. Each has \`title\`, \`subtitle\`, and \`draw(ctx, { width, height, scene, events, time })\`.
 - A browser-native 2D canvas draws wavefields, constellations, branching agent activity and scores. No shader framework or expensive simulation loop is required.
-- Replay works from a seeded, synthetic trace. Live mode only represents events received by the server.
+- Replay works from seeded, synthetic traces; the comparison can juxtapose three styles of one trace or the same style on three different demo traces. Live mode only represents events received by the server.
 - Export the PNG or the sanitized JSON trace. No upload or remote analytics.
 
 ## Resource budget and boundaries
