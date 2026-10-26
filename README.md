@@ -48,11 +48,11 @@ Every mode consumes the same read-only scene. Renderers can be added without cha
 - Keep demo and live data conspicuously separated; never mislabel synthetic activity as real.
 - Keep prototype standalone before integrating with the main Atelier repository.
 
-See [architecture](docs/ARCHITECTURE.md) and [schema](docs/SCHEMA.md) for internals and known limitations.
+See [architecture](docs/ARCHITECTURE.md), [schema](docs/SCHEMA.md), and the [handoff for the next artistic development stage](docs/HANDOFF_VISUAL_ART_DIRECTION.md) for internals, creative direction and known limitations.
 
 ## Security
 
-Default bind is **loopback only**. If you intentionally expose it on a network, set \`LIVING_CANVAS_TOKEN\`, use authenticated TLS at the reverse proxy, and restrict clients; this prototype is **not** an internet-facing telemetry service. Set \`CANVAS_REDACT_PATHS=1\` to suppress path names (at the cost of graph structure). Do not feed confidential traces to a public repository.
+Default bind is **loopback only**. If you intentionally expose it on a network, set `LIVING_CANVAS_TOKEN`, use authenticated TLS at the reverse proxy, and restrict clients; this prototype is **not** an internet-facing telemetry service. Set `CANVAS_REDACT_PATHS=1` to suppress path names (at the cost of graph structure). Do not feed confidential traces to a public repository.
 
 ## Project status
 
