@@ -24,11 +24,15 @@
         <button type="button" class="view" data-view="cosmos" aria-pressed="false"><span class="view-number">02</span><span class="view-text"><strong>File cosmos</strong><small>Architecture as constellation</small></span><span class="view-arrow">↗</span></button>
         <button type="button" class="view" data-view="streams" aria-pressed="false"><span class="view-number">03</span><span class="view-text"><strong>Agent currents</strong><small>Parallel work, intertwined</small></span><span class="view-arrow">↗</span></button>
         <button type="button" class="view" data-view="rhythm" aria-pressed="false"><span class="view-number">04</span><span class="view-text"><strong>Activity score</strong><small>Patterns through time</small></span><span class="view-arrow">↗</span></button>
+        <div class="nav-label lab-label">ART LAB / NEW STUDIES</div>
+        <button type="button" class="view" data-view="ink" aria-pressed="false"><span class="view-number">05</span><span class="view-text"><strong>Kinetic Ink</strong><small>Gesture, pigment, memory</small></span><span class="view-arrow">↗</span></button>
+        <button type="button" class="view" data-view="strata" aria-pressed="false"><span class="view-number">06</span><span class="view-text"><strong>Sculptural Strata</strong><small>Files become architecture</small></span><span class="view-arrow">↗</span></button>
+        <button type="button" class="view" data-view="loom" aria-pressed="false"><span class="view-number">07</span><span class="view-text"><strong>Signal Loom</strong><small>Events become textile</small></span><span class="view-arrow">↗</span></button>
       </nav>
       <div class="sidebar-bottom">
         <div class="mini-line"><span class="mini-icon">✧</span><span>Telemetry v1 / local-first</span></div>
         <p>No prompts, thoughts or source contents captured. Only allowlisted activity metadata.</p>
-        <div class="version">ATELIER LAB <span>V0.1</span></div>
+        <div class="version">ATELIER LAB <span>V0.2</span></div>
       </div>
     </aside>
     <main class="workspace">
@@ -42,7 +46,7 @@
           <div class="source-switch" role="group" aria-label="Data source"><button id="source-demo" type="button" class="selected" aria-pressed="true">✦ &nbsp; Demo</button><button id="source-live" type="button" aria-pressed="false"><span class="status-dot"></span> &nbsp; Live</button></div>
         </div>
         <section class="art-section" aria-label="Generative live artwork">
-          <div class="art-header"><div class="art-title"><span class="section-count">01 / VISUAL FIELD</span><span id="mode-label">Living artwork</span></div><div class="art-actions"><span id="event-count">0 events</span><button type="button" id="export-image" title="Save the artwork as PNG" aria-label="Save artwork as PNG">↧ <span>Export art</span></button><button type="button" id="export-trace" title="Download the sanitized event trace">⇩ <span>Trace</span></button></div></div>
+          <div class="art-header"><div class="art-title"><span class="section-count">01 / VISUAL FIELD</span><span id="mode-label">Living artwork</span></div><div class="art-actions"><span id="event-count">0 events</span><button type="button" id="compare" title="Compare three art studies at matching event phases">◫ <span>Compare studies</span></button><button type="button" id="export-image" title="Save the artwork as PNG" aria-label="Save artwork as PNG">↧ <span>Export art</span></button><button type="button" id="export-trace" title="Download the sanitized event trace">⇩ <span>Trace</span></button></div></div>
           <div class="canvas-wrap">
             <canvas id="art" aria-label="Animated data-driven artwork depicting agent work and changes to project files"></canvas>
             <div class="canvas-top-left"><span class="canvas-tag"><span class="tag-spark">✳</span> <span id="canvas-title">ACTIVITY × STRUCTURE</span></span></div>
@@ -61,6 +65,11 @@
             <span class="transport-divider"></span><span class="replay-note" id="playback-label">DETERMINISTIC REPLAY</span>
           </div>
         </section>
+        <dialog id="comparison" class="comparison-dialog" aria-labelledby="comparison-title">
+          <header><div><span class="eyebrow teal">ART LAB / PHASE COMPARISON</span><h2 id="comparison-title">One trace. Three interpretations.</h2><p id="comparison-source"></p></div><button type="button" id="close-comparison" aria-label="Close comparison">Close ✕</button></header>
+          <div id="comparison-grid" class="comparison-grid"></div>
+          <footer><p>Identical sanitized events and moments across all three studies. Choose a frame to inspect it in the main canvas.</p><button type="button" id="export-comparison">Export contact sheet PNG</button></footer>
+        </dialog>
         <div class="metric-grid" aria-label="Telemetry metrics">
           <div class="metric"><div class="metric-label">EVENTS OBSERVED <span>↗</span></div><div class="metric-value" id="metric-events">0</div><div class="metric-meta">Normalized events</div></div>
           <div class="metric"><div class="metric-label">ACTIVE AGENTS <span>↗</span></div><div class="metric-value" id="metric-agents">0</div><div class="metric-meta" id="agents-detail">In the observed run</div></div>

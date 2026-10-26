@@ -5,8 +5,12 @@ import * as hybrid from './visualizers/hybrid.mjs';
 import * as cosmos from './visualizers/cosmos.mjs';
 import * as streams from './visualizers/streams.mjs';
 import * as rhythm from './visualizers/rhythm.mjs';
+import * as ink from './visualizers/ink.mjs';
+import * as strata from './visualizers/strata.mjs';
+import * as loom from './visualizers/loom.mjs';
+import { tracePhases } from './visualizers/art-data.mjs';
 
-const views={hybrid,cosmos,streams,rhythm};
+const views={hybrid,cosmos,streams,rhythm,ink,strata,loom};
 const $=id=>document.getElementById(id);
 const canvas=$('art'),ctx=canvas.getContext('2d',{alpha:false,desynchronized:true});
 if(!ctx)throw new Error('Canvas 2D not supported');
@@ -130,8 +134,8 @@ function paint(clock){
     dirty=true;
   }
   const frameInterval=window.matchMedia('(prefers-reduced-motion: reduce)').matches?900:1000/30;
-  if(!dirty&&clock-lastFrame<frameInterval)return;
   if(clock-lastFrame<frameInterval)return;
+  if(!dirty&&(source==='live'||!playing))return;
   lastFrame=clock;dirty=false;
   const events=currentEvents(),activeTime=source==='demo'?playhead:(events.at(-1)?.at||Date.now());
   const key=source+':'+events.length+':'+Math.floor(activeTime/400);
@@ -169,6 +173,70 @@ function download(name,blob){
   a.href=url;a.download=name;document.body.append(a);a.click();a.remove();
   setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
+
+const comparison=$('comparison');
+let comparisonPreviews=[];
+function openComparison(){
+  // Freeze all inputs for this contact sheet; comparison never changes the live source.
+  const trace=source==='demo'?demo:liveEvents.slice();
+  const last=trace.at(-1)?.at??Date.now();
+  const phases=tracePhases(trace,last);
+  const modes=[['ink',ink],['strata',strata],['loom',loom]];
+  const labels=['OPENING','DEVELOPING','LATEST'];
+  const grid=$('comparison-grid');
+  const cards=[];
+  comparisonPreviews=[];
+  for(const [key,renderer] of modes){
+    const card=make('section','comparison-style');
+    card.append(make('h3','',renderer.title));
+    for(let i=0;i<phases.length;i++){
+      const phase=phases[i];
+      const thumb=document.createElement('canvas');
+      thumb.width=360;thumb.height=210;
+      const context=thumb.getContext('2d',{alpha:false});
+      if(!context)continue;
+      const scene=deriveScene(phase.events);
+      renderer.draw(context,{width:360,height:210,scene,events:phase.events,time:phase.time});
+      const button=make('button','comparison-phase');
+      button.type='button';
+      button.setAttribute('aria-label','Choose '+renderer.title+' at '+labels[i]);
+      button.append(thumb,make('span','',labels[i]+'  ·  '+phase.events.length+' events'));
+      button.addEventListener('click',()=>{
+        view=key;
+        if(source==='demo'){playhead=phase.time;playing=false;}
+        snapshotKey='';dirty=true;transportChanged=true;setButtonState();
+        comparison.close();
+      });
+      card.append(button);
+      comparisonPreviews.push({canvas:thumb,title:renderer.title,phase:labels[i],count:phase.events.length});
+    }
+    cards.push(card);
+  }
+  grid.replaceChildren(...cards);
+  $('comparison-source').textContent=source==='demo'?
+    'Synthetic demo · same fixed run and seed in every frame':
+    'Live · only the currently buffered event window (not full history)';
+  if(!comparison.open)comparison.showModal();
+}
+$('compare').addEventListener('click',openComparison);
+$('close-comparison').addEventListener('click',()=>comparison.close());
+$('export-comparison').addEventListener('click',()=>{
+  if(comparisonPreviews.length!==9)return;
+  const sheet=document.createElement('canvas');
+  sheet.width=1200;sheet.height=825;
+  const c=sheet.getContext('2d');if(!c)return;
+  c.fillStyle='#0e151e';c.fillRect(0,0,sheet.width,sheet.height);
+  c.fillStyle='#dee9e8';c.font='25px ui-sans-serif,system-ui';
+  c.fillText('ATELIER  /  ART LAB   —   PHASE STUDIES',30,43);
+  for(let j=0;j<3;j++)for(let i=0;i<3;i++){
+    const item=comparisonPreviews[j*3+i];
+    const x=30+j*390,y=78+i*245;
+    c.fillStyle='#9db7b7';c.font='13px ui-sans-serif,system-ui';
+    c.fillText(item.title+'   /   '+item.phase+'   /   '+item.count+' EVENTS',x,y);
+    c.drawImage(item.canvas,x,y+14,360,210);
+  }
+  sheet.toBlob(blob=>{if(blob)download('atelier-art-lab-contact-sheet.png',blob)},'image/png');
+});
 $('export-image').addEventListener('click',()=>canvas.toBlob(blob=>{
   if(blob)download('atelier-'+view+'-'+(source==='demo'?'demo':'live')+'.png',blob);
 },'image/png'));

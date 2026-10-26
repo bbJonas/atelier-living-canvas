@@ -2,7 +2,7 @@
 
 A local-first observability artwork for autonomous AI work. Watch the rhythm of tools, model request phases, subagents and file edits become an evolving picture — without pretending to see an LLM's thoughts.
 
-**Prototype v0.1:** self-contained Node 20+ server, no external runtime packages, four modular Canvas 2D modes, deterministic demo replay, live SSE ingestion, optional Git inventory, event/PNG export, tests and CI.
+**Art Lab v0.2:** self-contained Node 20+ server, no external runtime packages, seven modular Canvas 2D modes (four baseline + three distinct art studies), deterministic demo replay, live SSE ingestion, optional Git inventory, event/PNG export, tests and CI.
 
 ## Run it
 
@@ -38,6 +38,18 @@ This inventories files, but does **not** call them edits. A generic programmatic
 4. **Activity score** — a temporal composition of amplitude, frequency and event types.
 
 Every mode consumes the same read-only scene. Renderers can be added without changing telemetry capture.
+
+## Art Lab studies and phase comparison
+
+Three new data-driven visual approaches complement the four baseline renderers:
+
+- **Kinetic Ink** — translucent gestural strokes from verified file changes, handoffs, tests and tool activity; repeated paths share anchors.
+- **Sculptural Strata** — an isometric abstract architecture: individual files occupy stable slots and repeated edits thicken those volumes.
+- **Signal Loom** — woven agent strands, event-time weft and observed inter-agent handoff knots.
+
+Use **Compare studies** in the canvas toolbar to view opening/development/latest stages on the same frozen trace, then select a thumbnail to inspect that mode and (in Demo) seek to its timestamp. Export a 3 × 3 PNG contact sheet. Demo comparisons use the full fixed synthetic run; Live comparisons only use the journal still in memory, not an invented full history.
+
+See [Art Lab v0.2 design notes](docs/ART_LAB_V02.md) for the telemetry-to-visual mapping, limitations and validation steps.
 
 ## Design principles
 
