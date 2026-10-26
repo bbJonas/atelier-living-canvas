@@ -7,7 +7,13 @@ import { normalizeEvent } from './events.mjs';
 export function createInstrumentation({ runId = 'local-run', agentId = 'main', emit, clock = Date.now, onError = () => {} } = {}) {
   if (typeof emit !== 'function') throw new TypeError('emit callback required');
   const fire = (kind, fields = {}) => {
-    const item = normalizeEvent({ kind, runId, agentId, at: clock(), ...fields });
+    let item;
+    try {
+      item = normalizeEvent({ kind, runId, agentId, at: clock(), ...fields });
+    } catch (error) {
+      onError(error);
+      return null; // even malformed telemetry must not interrupt the harness
+    }
     try {
       Promise.resolve(emit(item)).catch(onError);
     } catch (error) { onError(error); }
