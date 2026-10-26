@@ -9,6 +9,16 @@ export function deriveScene(events) {
     scene.total++;
     scene.lastAt = Math.max(scene.lastAt, e.at);
     scene.runId = e.runId;
+    if (e.kind === 'file.discovered' && e.agentId === 'inventory') {
+      // Inventory is a passive file listing, not an executing agent.
+      if (e.filePath) {
+        const parts=e.filePath.split('/');
+        if (!scene.files.has(e.filePath)) scene.files.set(e.filePath,{ path:e.filePath,
+          parent:parts.slice(0,-1).join('/'), firstAt:e.at,lastAt:e.at,
+          changes:0,added:0,removed:0,operation:'observe',agents:[] });
+      }
+      continue;
+    }
     const agent = scene.agents.get(e.agentId) || { id: e.agentId, parent: e.parentAgentId || null,
       firstAt: e.at, lastAt: e.at, count: 0, active: true, tools: 0 };
     agent.lastAt = e.at;
