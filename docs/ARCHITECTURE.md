@@ -11,7 +11,7 @@ Living Canvas observes the *execution* of work, not a model's private mind. The 
 - Canonical schema: \`src/core/events.mjs\` / \`docs/SCHEMA.md\`.
 - \`EventCollector\` validates whole batches, keeps a bounded journal (default 3,000 events), limits input rate (default 300/s), and fans out lightweight SSE messages. No telemetry database or background polling.
 - \`POST /api/events\` ingests; \`GET /api/stream\` yields initial snapshot + events; \`GET /api/snapshot\` enables inspection; \`GET /api/health\` exposes counters.
-- CLI bridge reads canonical JSONL, or produces a Git-file inventory. Adapters for DSH, OpenCode, Pi, Hermes and Atelier can call the same contract. Do not advertise vendor integrations as ready before verifying their event hooks.
+- CLI bridge reads canonical JSONL with a 150 ms time-based flush, or produces a Git-file inventory. A framework-independent `createInstrumentation` hook wrapper and event-triggered `createHttpEmitter` transport offer an in-process integration route. Adapters for DSH, OpenCode, Pi, Hermes and Atelier can call the same contract. Do not advertise vendor integrations as ready before verifying their event hooks.
 
 ## Layer B — transformation and artwork
 
