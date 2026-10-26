@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080d14">
+  <meta name="description" content="Living Canvas turns agent activity into a growing artwork.">
+  <title>Living Canvas — Atelier</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script type="module" src="/main.mjs"></script>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar" aria-label="Visualizations">
+      <div class="brand"><div class="brand-glyph" aria-hidden="true"><i></i><i></i><i></i><i></i></div><span>ATELIER<span class="brand-dot">.</span></span></div>
+      <div class="sidebar-section">
+        <div class="eyebrow">EXPERIMENTAL / 001</div>
+        <h1>Living<br>Canvas<span class="accent">.</span></h1>
+        <p class="sidebar-intro">A living portrait of autonomous work. Drawn from events, not imagination.</p>
+      </div>
+      <nav class="views" aria-label="Artwork mode">
+        <div class="nav-label">VISUAL LANGUAGES</div>
+        <button type="button" class="view active" data-view="hybrid" aria-pressed="true"><span class="view-number">01</span><span class="view-text"><strong>Living artwork</strong><small>Rhythm + project structure</small></span><span class="view-arrow">↗</span></button>
+        <button type="button" class="view" data-view="cosmos" aria-pressed="false"><span class="view-number">02</span><span class="view-text"><strong>File cosmos</strong><small>Architecture as constellation</small></span><span class="view-arrow">↗</span></button>
+        <button type="button" class="view" data-view="streams" aria-pressed="false"><span class="view-number">03</span><span class="view-text"><strong>Agent currents</strong><small>Parallel work, intertwined</small></span><span class="view-arrow">↗</span></button>
+        <button type="button" class="view" data-view="rhythm" aria-pressed="false"><span class="view-number">04</span><span class="view-text"><strong>Activity score</strong><small>Patterns through time</small></span><span class="view-arrow">↗</span></button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="mini-line"><span class="mini-icon">✧</span><span>Telemetry v1 / local-first</span></div>
+        <p>No prompts, thoughts or source contents captured. Only allowlisted activity metadata.</p>
+        <div class="version">ATELIER LAB <span>V0.1</span></div>
+      </div>
+    </aside>
+    <main class="workspace">
+      <header class="topbar">
+        <div class="breadcrumbs">WORKSPACE <span>/</span> EXPERIMENTS <span>/</span> <b>LIVING CANVAS</b></div>
+        <div class="top-right"><span id="connection" class="connection"><span class="status-dot"></span> Demo trace</span><span class="top-separator"></span><span>TELEMETRY V1</span></div>
+      </header>
+      <div class="content">
+        <div class="intro-row">
+          <div><div class="eyebrow teal">GENERATIVE OBSERVABILITY</div><h2>Observe what is <em>becoming.</em></h2><p>One event stream. Many ways to see the work unfold.</p></div>
+          <div class="source-switch" role="group" aria-label="Data source"><button id="source-demo" type="button" class="selected" aria-pressed="true">✦ &nbsp; Demo</button><button id="source-live" type="button" aria-pressed="false"><span class="status-dot"></span> &nbsp; Live</button></div>
+        </div>
+        <section class="art-section" aria-label="Generative live artwork">
+          <div class="art-header"><div class="art-title"><span class="section-count">01 / VISUAL FIELD</span><span id="mode-label">Living artwork</span></div><div class="art-actions"><span id="event-count">0 events</span><button type="button" id="export-image" title="Save the artwork as PNG" aria-label="Save artwork as PNG">↧ <span>Export art</span></button><button type="button" id="export-trace" title="Download the sanitized event trace">⇩ <span>Trace</span></button></div></div>
+          <div class="canvas-wrap">
+            <canvas id="art" aria-label="Animated data-driven artwork depicting agent work and changes to project files"></canvas>
+            <div class="canvas-top-left"><span class="canvas-tag"><span class="tag-spark">✳</span> <span id="canvas-title">ACTIVITY × STRUCTURE</span></span></div>
+            <div class="canvas-top-right">CANVAS / 01</div>
+            <div class="canvas-bottom-left"><div class="canvas-footnote"><span class="little-light"></span><span id="canvas-state">Synthetic replay · not a live agent</span></div></div>
+            <div class="canvas-bottom-right">GENERATED FROM TELEMETRY <span>↗</span></div>
+            <div id="empty-live" class="empty-live hidden"><div class="empty-mark">◈</div><strong>Waiting for the first event</strong><span>POST structured telemetry to /api/events or use the CLI bridge.</span></div>
+          </div>
+          <div class="transport">
+            <button type="button" class="transport-btn" id="restart" aria-label="Replay from beginning" title="Restart">↺</button>
+            <button type="button" class="transport-btn play-btn" id="play" aria-label="Pause replay" title="Play / Pause">Ⅱ</button>
+            <span id="elapsed" class="time-readout">00:00</span>
+            <input id="scrubber" type="range" min="0" max="1000" value="460" aria-label="Replay timeline">
+            <span id="duration" class="time-readout">00:00</span>
+            <button type="button" class="speed" id="speed" title="Playback speed">1×</button>
+            <span class="transport-divider"></span><span class="replay-note" id="playback-label">DETERMINISTIC REPLAY</span>
+          </div>
+        </section>
+        <div class="metric-grid" aria-label="Telemetry metrics">
+          <div class="metric"><div class="metric-label">EVENTS OBSERVED <span>↗</span></div><div class="metric-value" id="metric-events">0</div><div class="metric-meta">Normalized events</div></div>
+          <div class="metric"><div class="metric-label">ACTIVE AGENTS <span>↗</span></div><div class="metric-value" id="metric-agents">0</div><div class="metric-meta" id="agents-detail">In the observed run</div></div>
+          <div class="metric"><div class="metric-label">FILES CHANGED <span>↗</span></div><div class="metric-value" id="metric-files">0</div><div class="metric-meta">Unique changed paths</div></div>
+          <div class="metric"><div class="metric-label">TOOL CALLS <span>↗</span></div><div class="metric-value" id="metric-tools">0</div><div class="metric-meta">Observed tool starts</div></div>
+        </div>
+        <div class="detail-grid">
+          <section class="detail-panel">
+            <header><div><span class="panel-kicker">OBSERVATION LOG</span><h3>Recent activity</h3></div><span class="panel-hint">METADATA ONLY</span></header>
+            <div id="activity-list" class="activity-list" aria-live="off"></div>
+          </section>
+          <section class="detail-panel">
+            <header><div><span class="panel-kicker">PROJECT TOPOLOGY</span><h3>Files taking shape</h3></div><span class="panel-hint">TRACKED / CHANGED</span></header>
+            <div id="file-list" class="file-list"></div>
+          </section>
+        </div>
+        <footer class="footer"><span>AN EXPERIMENT IN GENERATIVE OBSERVABILITY</span><span>LOCAL BY DEFAULT · MODULAR BY DESIGN</span></footer>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
