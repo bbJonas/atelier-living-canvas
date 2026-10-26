@@ -26,7 +26,7 @@ Living Canvas observes the *execution* of work, not a model's private mind. The 
 
 - No permanent indexer or deep file scanning. The CLI inventory runs once when explicitly requested.
 - Up to 30 draw FPS; actual internal resolution is capped to roughly 1.6 million pixels; reduced-motion preference drops to ~1 FPS; hidden tabs do not render.
-- Event history is bounded; very long runs need a separate bounded *materialized state* to preserve old file changes beyond the event journal. This is an explicit follow-up and a known v0.1 limit.
+- Event history is bounded. An incremental `MaterializedScene` projection preserves file/agent state and counters beyond the journal, with a separate 2,500-file LRU limit and 96-agent cap. Extremely large projects can still evict old file nodes.
 - UI repaint and DOM panels are throttled; graphs use simple 2D primitives.
 - Default binding: \`127.0.0.1:4173\`. Protect non-loopback deployments with \`LIVING_CANVAS_TOKEN\`, reverse-proxy TLS and authentication. Do not expose the ingestion service directly to the internet.
 - File path names themselves may be sensitive; hide absolute paths, traversal, secret/config folders. \`CANVAS_REDACT_PATHS=1\` disables paths completely (and thus the file-cosmos detail).
@@ -40,4 +40,4 @@ Future Harness²/ALTK integration should consume exported event *summaries* for 
 
 ## Current limits
 
-This version is a working artistic demonstrator with generic live ingestion, not a native Atelier integration. It has no privileged access to LLM internals. Event kind coverage depends on what the harness actually emits. Canvas layout represents paths, not full semantic import dependencies. Historical snapshots after the journal cap, multi-run multiplexing, authenticated remote access, and browser accessibility reviews remain future work.
+This version is a working artistic demonstrator with generic live ingestion, not a native Atelier integration. It has no privileged access to LLM internals. Event kind coverage depends on what the harness actually emits. Canvas layout represents paths, not full semantic import dependencies. Full unbounded history, multi-run multiplexing, authenticated remote access, and browser accessibility reviews remain future work.
