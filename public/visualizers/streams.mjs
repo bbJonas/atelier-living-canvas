@@ -15,16 +15,21 @@ export function draw(ctx,env){
     ctx.fillStyle='#8299aa';ctx.font='11px ui-sans-serif, system-ui';ctx.fillText(a.id,23,y-12);
     ctx.strokeStyle='rgba(103,150,168,.14)';ctx.lineWidth=.8;
     ctx.beginPath();ctx.moveTo(startX,y);ctx.lineTo(endX,y);ctx.stroke();
-    const points=events.filter(e=>e.agentId===a.id&&e.at>time-windowMs);
+    // Bin pulses once: O(events * constant) rather than O(events * pixels).
+    const energies=new Float32Array(136);
+    for(const e of events){
+      if(e.agentId!==a.id||e.at<time-windowMs)continue;
+      const center=Math.round((e.at-(time-windowMs))/windowMs*135);
+      const weight=e.kind==='file.changed'?1.8:1;
+      for(let d=-9;d<=9;d++){
+        const k=center+d;
+        if(k>=0&&k<energies.length)energies[k]+=Math.exp(-d*d/14)*weight;
+      }
+    }
     ctx.beginPath();
     for(let k=0;k<=135;k++){
       const x=startX+(endX-startX)*k/135;
-      let energy=0;
-      for(const e of points){
-        const dist=Math.abs(signalTime(e)-x);
-        if(dist<34) energy+=Math.exp(-dist*dist/180)*(e.kind==='file.changed'?1.8:1);
-      }
-      const yy=y+Math.sin(k*.12+j*2+time*.00075)*(4+Math.min(energy*4,space*.28));
+      const yy=y+Math.sin(k*.12+j*2+time*.00075)*(4+Math.min(energies[k]*4,space*.28));
       if(!k)ctx.moveTo(x,yy);else ctx.lineTo(x,yy);
     }
     ctx.strokeStyle=color;ctx.lineWidth=1.6;ctx.shadowColor=color;ctx.shadowBlur=8;ctx.stroke();ctx.shadowBlur=0;
