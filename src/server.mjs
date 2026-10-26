@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { resolve, extname, sep } from 'node:path';
 import { EventCollector } from './core/collector.mjs';
+import { MaterializedScene } from './core/materializer.mjs';
 
 const ROOT = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const PORT = Number(process.env.PORT || 4173);
@@ -13,6 +14,8 @@ const collector = new EventCollector({
   maxPerSecond: Number(process.env.CANVAS_RATE || 300),
   includeFilePaths: process.env.CANVAS_REDACT_PATHS !== '1'
 });
+const materializer = new MaterializedScene();
+collector.subscribe(event => materializer.apply(event));
 const TYPES = {
   '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8',
   '.mjs': 'text/javascript; charset=utf-8', '.js': 'text/javascript; charset=utf-8',
@@ -53,7 +56,7 @@ const server = http.createServer(async (req, res) => {
     return respond(res, 200, { ok: true, schema: 1, ...collector.stats });
   }
   if (url.pathname === '/api/snapshot' && req.method === 'GET') {
-    return respond(res, 200, { events: collector.snapshot(), stats: collector.stats });
+    return respond(res, 200, { events: collector.snapshot(), stats: collector.stats, state: materializer.snapshot() });
   }
   if (url.pathname === '/api/events' && req.method === 'POST') {
     if (!sameOrigin(req)) return respond(res, 403, { error: 'Cross-origin writes disabled' });
@@ -75,7 +78,7 @@ const server = http.createServer(async (req, res) => {
     res.writeHead(200, { 'Content-Type': 'text/event-stream; charset=utf-8',
       'Cache-Control': 'no-cache, no-transform', Connection: 'keep-alive',
       'X-Accel-Buffering': 'no' });
-    pushSSE(res, 'snapshot', { events: collector.snapshot(), stats: collector.stats });
+    pushSSE(res, 'snapshot', { events: collector.snapshot(), stats: collector.stats, state: materializer.snapshot() });
     const unsubscribe = collector.subscribe(event => {
       if (!res.destroyed) pushSSE(res, 'telemetry', event);
     });
