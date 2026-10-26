@@ -28,11 +28,15 @@
         <button type="button" class="view" data-view="ink" aria-pressed="false"><span class="view-number">05</span><span class="view-text"><strong>Kinetic Ink</strong><small>Gesture, pigment, memory</small></span><span class="view-arrow">↗</span></button>
         <button type="button" class="view" data-view="strata" aria-pressed="false"><span class="view-number">06</span><span class="view-text"><strong>Sculptural Strata</strong><small>Files become architecture</small></span><span class="view-arrow">↗</span></button>
         <button type="button" class="view" data-view="loom" aria-pressed="false"><span class="view-number">07</span><span class="view-text"><strong>Signal Loom</strong><small>Events become textile</small></span><span class="view-arrow">↗</span></button>
+        <div class="nav-label lab-label">EXPRESSIVE / V0.3</div>
+        <button type="button" class="view" data-view="prismatic" aria-pressed="false"><span class="view-number">08</span><span class="view-text"><strong>Prismatic Ink</strong><small>Chromatic overpainting</small></span><span class="view-arrow">↗</span></button>
+        <button type="button" class="view" data-view="bloom" aria-pressed="false"><span class="view-number">09</span><span class="view-text"><strong>Chromatic Bloom</strong><small>Persistent organic growth</small></span><span class="view-arrow">↗</span></button>
+        <button type="button" class="view" data-view="ribbons" aria-pressed="false"><span class="view-number">10</span><span class="view-text"><strong>Kinetic Ribbons</strong><small>Braided agent streams</small></span><span class="view-arrow">↗</span></button>
       </nav>
       <div class="sidebar-bottom">
         <div class="mini-line"><span class="mini-icon">✧</span><span>Telemetry v1 / local-first</span></div>
         <p>No prompts, thoughts or source contents captured. Only allowlisted activity metadata.</p>
-        <div class="version">ATELIER LAB <span>V0.2</span></div>
+        <div class="version">ATELIER LAB <span>V0.3</span></div>
       </div>
     </aside>
     <main class="workspace">
@@ -43,7 +47,7 @@
       <div class="content">
         <div class="intro-row">
           <div><div class="eyebrow teal">GENERATIVE OBSERVABILITY</div><h2>Observe what is <em>becoming.</em></h2><p>One event stream. Many ways to see the work unfold.</p></div>
-          <div class="source-switch" role="group" aria-label="Data source"><button id="source-demo" type="button" class="selected" aria-pressed="true">✦ &nbsp; Demo</button><button id="source-live" type="button" aria-pressed="false"><span class="status-dot"></span> &nbsp; Live</button></div>
+          <div class="source-controls"><label class="dataset-control" for="dataset">SYNTHETIC TRACE<select id="dataset" aria-label="Synthetic demo dataset"><option value="atlas">Atlas / Baseline</option><option value="release-rush">Release Rush / Parallel</option><option value="deep-refactor">Deep Refactor / Slow</option></select></label><div class="source-switch" role="group" aria-label="Data source"><button id="source-demo" type="button" class="selected" aria-pressed="true">✦ &nbsp; Demo</button><button id="source-live" type="button" aria-pressed="false"><span class="status-dot"></span> &nbsp; Live</button></div></div>
         </div>
         <section class="art-section" aria-label="Generative live artwork">
           <div class="art-header"><div class="art-title"><span class="section-count">01 / VISUAL FIELD</span><span id="mode-label">Living artwork</span></div><div class="art-actions"><span id="event-count">0 events</span><button type="button" id="compare" title="Compare three art studies at matching event phases">◫ <span>Compare studies</span></button><button type="button" id="export-image" title="Save the artwork as PNG" aria-label="Save artwork as PNG">↧ <span>Export art</span></button><button type="button" id="export-trace" title="Download the sanitized event trace">⇩ <span>Trace</span></button></div></div>
@@ -67,8 +71,13 @@
         </section>
         <dialog id="comparison" class="comparison-dialog" aria-labelledby="comparison-title">
           <header><div><span class="eyebrow teal">ART LAB / PHASE COMPARISON</span><h2 id="comparison-title">One trace. Three interpretations.</h2><p id="comparison-source"></p></div><button type="button" id="close-comparison" aria-label="Close comparison">Close ✕</button></header>
+          <div class="comparison-controls">
+            <label>COMPARE BY<select id="comparison-kind" aria-label="Compare by"><option value="styles">Three styles · same dataset</option><option value="datasets">Three datasets · same style</option></select></label>
+            <label>ART STYLE<select id="comparison-style" aria-label="Style for dataset comparison"><option value="prismatic">Prismatic Ink</option><option value="bloom">Chromatic Bloom</option><option value="ribbons">Kinetic Ribbons</option><option value="ink">Kinetic Ink</option><option value="strata">Sculptural Strata</option><option value="loom">Signal Loom</option></select></label>
+            <label>STYLE GROUP<select id="comparison-group" aria-label="Styles for phase comparison"><option value="expressive">Expressive / New studies</option><option value="classic">Art Lab / Original studies</option></select></label>
+          </div>
           <div id="comparison-grid" class="comparison-grid"></div>
-          <footer><p>Identical sanitized events and moments across all three studies. Choose a frame to inspect it in the main canvas.</p><button type="button" id="export-comparison">Export contact sheet PNG</button></footer>
+          <footer><p>Phases are elapsed-time slices of synthetic or buffered events. Choose a frame to inspect it in the main canvas.</p><button type="button" id="export-comparison">Export contact sheet PNG</button></footer>
         </dialog>
         <div class="metric-grid" aria-label="Telemetry metrics">
           <div class="metric"><div class="metric-label">EVENTS OBSERVED <span>↗</span></div><div class="metric-value" id="metric-events">0</div><div class="metric-meta">Normalized events</div></div>
