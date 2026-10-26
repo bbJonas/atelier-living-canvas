@@ -120,3 +120,22 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--mint);outline-o
 @media(max-width:850px){.shell{display:block}.sidebar{position:relative;height:auto;min-height:0;border-right:0;border-bottom:1px solid #283441;padding:18px 20px}.sidebar-section,.sidebar-bottom,.nav-label{display:none}.views{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-top:18px;gap:7px}.view{padding:10px;justify-content:center}.view-number,.view small,.view-arrow{display:none}.view-text strong{font-size:10px;text-align:center}.topbar{height:49px}.content{padding:30px 20px}.intro-row{margin-bottom:25px}.metric-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:620px){.breadcrumbs{font-size:9px}.breadcrumbs span{padding:0 5px}.top-right{display:none}.intro-row{align-items:flex-start;flex-direction:column}.intro-row h2{font-size:31px}.source-switch{align-self:flex-start}.views{grid-template-columns:repeat(2,1fr)}.canvas-wrap{height:330px}.art-actions #event-count,.art-actions button span,.canvas-bottom-right{display:none}.art-actions{gap:6px}.art-header{padding:0 11px}.art-title{gap:8px}.transport{gap:7px;padding:0 9px}.detail-grid{grid-template-columns:1fr}.metric{padding:14px}.metric-value{font-size:26px}.footer{flex-direction:column}.canvas-top-right{display:none}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
+
+/* Art Lab studies: preserve the existing workspace and art surface. */
+.lab-label{padding-top:15px;border-top:1px solid #24313d;margin-top:10px}
+.comparison-dialog{position:fixed;inset:4vh auto auto;max-height:92vh;width:min(1180px,94vw);max-width:none;overflow-y:auto;border:1px solid #40565f;border-radius:12px;padding:22px;background:#111b25;color:#e8eef7;box-shadow:0 28px 100px #0009}
+.comparison-dialog::backdrop{background:rgba(2,8,13,.78)}
+.comparison-dialog>header{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;border-bottom:1px solid #30404b;padding:0 0 17px}
+.comparison-dialog h2{font-size:24px;font-weight:550;letter-spacing:-.04em;margin:8px 0}
+.comparison-dialog p{font-size:12px;color:#93aabb;line-height:1.6;margin:7px 0}
+.comparison-dialog button{background:#1b3037;border:1px solid #456263;border-radius:6px;padding:9px 13px;color:#dbf2e9}
+.comparison-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;padding:18px 0}
+.comparison-style{min-width:0;background:#0c141d;border:1px solid #2a3e48;border-radius:8px;padding:11px}
+.comparison-style h3{font-size:14px;font-weight:600;margin:2px 0 12px;color:#d4e5e7}
+.comparison-phase{display:block;width:100%;padding:4px!important;margin-bottom:10px;text-align:left;background:#141e29!important;border-color:#2b3e49!important}
+.comparison-phase:hover{border-color:#81ccc3!important}
+.comparison-phase canvas{display:block;width:100%;height:auto;aspect-ratio:12/7;border-radius:3px}
+.comparison-phase span{display:block;padding:8px 6px 5px;color:#a4b8bf;font-size:10px;letter-spacing:.075em}
+.comparison-dialog footer{display:flex;align-items:center;justify-content:space-between;gap:15px;border-top:1px solid #30404b;padding-top:12px}
+@media(max-width:850px){.lab-label{grid-column:1/-1}.comparison-grid{grid-template-columns:1fr}.comparison-style{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.comparison-style h3{grid-column:1/-1}.comparison-dialog{padding:14px}.comparison-dialog footer{flex-direction:column;align-items:flex-start}}
+@media(max-width:620px){.comparison-style{display:block}.comparison-dialog h2{font-size:19px}.comparison-dialog>header{flex-direction:column}.comparison-dialog footer button{width:100%}}
