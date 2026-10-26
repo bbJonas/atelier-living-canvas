@@ -56,4 +56,4 @@ Default bind is **loopback only**. If you intentionally expose it on a network, 
 
 ## Project status
 
-This is a separate demonstrator, not deployed inside Atelier and not production-hardened. An accurate mapping for each real harness, state retention beyond the event journal, browser testing and performance measurements on target hardware are still necessary before integration.
+This is a separate demonstrator, not deployed inside Atelier and not production-hardened. An accurate mapping for each real harness, unbounded full-history replay, browser testing and performance measurements on target hardware are still necessary before integration.
