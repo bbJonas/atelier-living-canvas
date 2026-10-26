@@ -39,11 +39,28 @@ if (process.argv.includes('--git-files')) {
 } else {
   const rl = createInterface({ input: process.stdin, crlfDelay: Infinity });
   let batch = [];
-  for await (const line of rl) {
-    if (!line.trim()) continue;
-    const item = JSON.parse(line);
-    batch.push(item);
-    if (batch.length >= 40) { await post(batch); batch = []; }
+  let pending = Promise.resolve();
+  let failure = null;
+  function flush() {
+    if (!batch.length || failure) return;
+    const items = batch;
+    batch = [];
+    pending = pending.then(() => post(items)).catch(error => { failure = error; });
   }
-  if (batch.length) await post(batch);
+  // Flush sparse, long-running streams promptly; never wait for stdin EOF.
+  const timer = setInterval(flush, 150);
+  try {
+    for await (const line of rl) {
+      if (failure) throw failure;
+      if (!line.trim()) continue;
+      batch.push(JSON.parse(line));
+      if (batch.length >= 40) flush();
+      if (batch.length >= 200) await pending;
+    }
+    flush();
+    await pending;
+    if (failure) throw failure;
+  } finally {
+    clearInterval(timer);
+  }
 }
